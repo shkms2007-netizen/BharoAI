@@ -56,7 +56,7 @@ export async function runOCR(file: File): Promise<any> {
   });
   if (!res.ok) {
     console.error(await res.text());
-    throw new Error("Could not read the card clearly");
+    throw new Error("API Error: " + errText.slice(0, 300));
   }
   const data = await res.json();
   const txt = data?.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
