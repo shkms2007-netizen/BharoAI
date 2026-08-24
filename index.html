@@ -1,12 +1,59 @@
-[
-  {"id": "pan", "name": "PAN Card - Form 49A", "price": 29, "fields": ["Name", "Father Name", "DOB"]},
-  {"id": "voter", "name": "Voter ID - Form 6", "price": 29, "fields": ["Name", "Age", "Address"]},
-  {"id": "passport", "name": "Passport Application", "price": 49, "fields": ["Name", "DOB", "Address"]},
-  {"id": "income", "name": "Income Certificate", "price": 29, "fields": ["Name", "Income"]},
-  {"id": "domicile", "name": "Domicile Certificate", "price": 29, "fields": ["Name", "Address"]},
-  {"id": "caste", "name": "Caste Certificate", "price": 29, "fields": ["Name", "Caste"]},
-  {"id": "eshram", "name": "E-Shram Card", "price": 19, "fields": ["Name", "Work"]},
-  {"id": "ayushman", "name": "Ayushman Card", "price": 19, "fields": ["Name", "Aadhaar"]},
-  {"id": "ration", "name": "Ration Card", "price": 29, "fields": ["Head Name", "Family"]},
-  {"id": "udyam", "name": "Udyam Registration", "price": 49, "fields": ["Business", "Aadhaar"]}
-]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BharoAI - All Government Forms</title>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}
+body{background:#f6f7fb}
+header{background:#111827;color:#fff;padding:14px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px;padding:16px}
+.card{background:#fff;border-radius:14px;padding:14px;box-shadow:0 4px 12px rgba(0,0,0,.06);cursor:pointer;border:2px solid transparent}
+.card:hover{border-color:#111827}
+.card h3{font-size:14px;margin-bottom:6px}
+.price{font-weight:700;color:#059669;margin-top:6px}
+#formModal{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;padding:16px;z-index:20}
+.box{background:#fff;border-radius:16px;padding:20px;width:100%;max-width:420px;max-height:90vh;overflow:auto}
+.box input{width:100%;padding:11px;border:1px solid #d1d5db;border-radius:8px;margin-bottom:10px}
+.btn{width:100%;padding:12px;border:0;border-radius:10px;font-weight:700;cursor:pointer}
+.btn-pay{background:#111827;color:#fff}
+.btn-close{background:#e5e7eb;margin-top:8px}
+</style>
+</head>
+<body>
+<header><h1>🇮🇳 BharoAI</h1><span style="font-size:12px">100% Online</span></header>
+<div class="grid" id="grid"></div>
+<div id="formModal"><div class="box">
+<h2 id="formTitle"></h2><div id="fields"></div>
+<button class="btn btn-pay" id="payBtn">Pay & Download PDF</button>
+<button class="btn btn-close" onclick="closeModal()">Cancel</button>
+</div></div>
+<script>
+const FORMS = [
+{id:"pan",name:"PAN Card - Form 49A",price:29,fields:["Full Name","Father Name","DOB","Mobile","Address"]},
+{id:"passport",name:"Passport Application",price:49,fields:["Full Name","DOB","Address","Mobile"]},
+{id:"voter",name:"Voter ID - Form 6",price:29,fields:["Full Name","Age","Address","Mobile"]},
+{id:"income",name:"Income Certificate",price:29,fields:["Full Name","Income","Address","Father Name"]},
+{id:"domicile",name:"Domicile Certificate",price:29,fields:["Full Name","Address","DOB"]},
+{id:"caste",name:"Caste Certificate",price:29,fields:["Full Name","Caste","Address"]},
+{id:"eshram",name:"E-Shram Card",price:19,fields:["Full Name","Work","Aadhaar","Mobile"]},
+{id:"ayushman",name:"Ayushman Card",price:19,fields:["Full Name","Aadhaar","Mobile"]},
+{id:"ration",name:"Ration Card",price:29,fields:["Head Name","Family","Aadhaar","Address"]},
+{id:"udyam",name:"Udyam Registration",price:49,fields:["Business Name","Owner Name","Aadhaar","Mobile"]}
+];
+let activeForm=null;
+const grid=document.getElementById('grid');
+FORMS.forEach(f=>{grid.innerHTML+=`<div class="card" onclick="openForm('${f.id}')"><h3>${f.name}</h3><div class="price">₹${f.price}</div></div>`;});
+function openForm(id){activeForm=FORMS.find(x=>x.id===id);document.getElementById('formTitle').innerText=activeForm.name+" - ₹"+activeForm.price;document.getElementById('fields').innerHTML=activeForm.fields.map(n=>`<input placeholder="${n}" id="f_${n}">`).join('')+`<input placeholder="Email" id="f_email">`;document.getElementById('formModal').style.display='flex';}
+function closeModal(){document.getElementById('formModal').style.display='none';}
+document.getElementById('payBtn').onclick=function(){
+  const RAZORPAY_KEY = "rzp_live_REPLACE_WITH_YOUR_KEY";
+  if(RAZORPAY_KEY.includes("REPLACE")){alert("DEMO Success! Live ke liye apni Razorpay Live Key Line 45 pe daalo.");generatePDF();return;}
+  new Razorpay({key:RAZORPAY_KEY,amount:activeForm.price*100,currency:"INR",name:"BharoAI",description:activeForm.name,handler:function(r){generatePDF(r.razorpay_payment_id);},theme:{color:"#111827"}}).open();
+};
+function generatePDF(pid){let t=`BharoAI - ${activeForm.name}\nPayment: ${pid||'DEMO'}\n\n`;activeForm.fields.forEach(n=>{t+=`${n}: ${document.getElementById('f_'+n).value}\n`;});const b=new Blob([t],{type:'application/pdf'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`${activeForm.id}.pdf`;a.click();closeModal();}
+</script>
+</body>
+</html>
