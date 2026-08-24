@@ -49,7 +49,7 @@ export async function runOCR(file: File | Blob, onProgress?: (p: number) => void
 
   if (onProgress) onProgress(0.5);
 
-  const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent", {
+  const res = await fetch("https://generativelanguage.googleapis.com/v1/models/gemini-3-flash:generateContent", {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
     body: JSON.stringify({
