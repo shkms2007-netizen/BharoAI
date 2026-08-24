@@ -1,124 +1,71 @@
-import type { AadhaarData } from '@/types';
-
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
-const MODEL = 'gemini-1.5-flash';
-const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`;
-
-function isGeminiConfigured(): boolean {
-  return!!API_KEY && API_KEY.length > 10;
+export interface ParsedAadhaar {
+  fullName?: string;
+  aadhaarNumber?: string;
+  dob?: string;
+  gender?: string;
+  address?: string;
+  pincode?: string;
 }
 
-async function fileToBase64(file: File | Blob): Promise<{ base64: string; mime: string }> {
-  const mime = file.type || 'image/jpeg';
-  const buffer = await file.arrayBuffer();
-  let binary = '';
-  const bytes = new Uint8Array(buffer);
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  const base64 = btoa(binary);
-  return { base64, mime };
+function fileToBase64(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      const base64 = result.split(',')[1];
+      resolve(base64);
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
 }
 
-// Main function used by your app
-export async function runOCR(
-  file: File | Blob,
-  onProgress?: (pct: number) => void,
-): Promise<string> {
-  if (!isGeminiConfigured()) {
-    throw new Error('Gemini API key not configured');
-  }
-  onProgress?.(10);
-  const { base64, mime } = await fileToBase64(file);
-  onProgress?.(30);
+export async function runOCR(file: File): Promise<ParsedAadhaar> {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) throw new Error("API key not configured");
 
-  const prompt = `You are Aadhaar OCR expert. Extract from this Indian Aadhaar card image:
-- Full Name
-- Date of Birth (DD/MM/YYYY)
-- Gender
-- Aadhaar Number (12 digits as XXXX XXXX XXXX)
-- Full Address
+  const base64 = await fileToBase64(file);
+  const mimeType = file.type || "image/jpeg";
 
-Return ONLY valid JSON like:
-{"name":"...","dob":"...","gender":"Male/Female/Other","aadhaarNumber":"XXXX XXXX XXXX","address":"..."}
-If a field is not visible, use "Not detected". If this is back side of Aadhaar, extract address only and put "Not detected" for name. JSON only, no extra text.`;
+  const prompt = `You are Aadhaar OCR. Extract from this Aadhaar card image and return ONLY valid JSON:
+{
+  "fullName": "name as on card",
+  "aadhaarNumber": "12 digit number without spaces",
+  "dob": "DD/MM/YYYY",
+  "gender": "MALE/FEMALE",
+  "address": "full address",
+  "pincode": "6 digit"
+}
+If field not visible, skip it. Return JSON only, no markdown.`;
 
-  const body = {
-    contents: [
-      {
-        role: 'user',
-        parts: [
-          { inline_data: { mime_type: mime, data: base64 } },
-          { text: prompt },
-        ],
+  const res = await fetch(
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": apiKey,
       },
-    ],
-    generationConfig: { temperature: 0.1, maxOutputTokens: 500 },
-  };
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mimeType, data: base64 } }] }],
+      }),
+    }
+  );
 
-  const resp = await fetch(ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-
-  if (!resp.ok) {
-    const err = await resp.json().catch(() => null);
-    throw new Error(err?.error?.message || `Gemini error ${resp.status}`);
+  if (!res.ok) {
+    const err = await res.text();
+    console.error("Gemini error:", err);
+    throw new Error("Could not read the card clearly");
   }
 
-  const data = await resp.json();
-  const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
-  onProgress?.(90);
-  return text;
-}
+  const data = await res.json();
+  const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-export function parseAadhaarText(rawText: string): AadhaarData {
   try {
-    // Try to find JSON inside response
-    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-    if (jsonMatch) {
-      const parsed = JSON.parse(jsonMatch[0]);
-      return {
-        name: parsed.name || 'Not detected',
-        dob: parsed.dob || 'Not detected',
-        gender: parsed.gender || 'Not detected',
-        aadhaarNumber: parsed.aadhaarNumber || 'Not detected',
-        address: parsed.address || 'Not detected',
-      };
-    }
-  } catch {}
-
-  // Fallback if not JSON
-  return {
-    name: 'Not detected',
-    dob: 'Not detected',
-    gender: 'Not detected',
-    aadhaarNumber: 'Not detected',
-    address: rawText.slice(0, 200),
-  };
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    const parsed = JSON.parse(jsonMatch? jsonMatch[0] : text);
+    return parsed;
+  } catch {
+    throw new Error("Could not read the card clearly");
+  }
 }
-
-export async function convertPdfToImage(file: File): Promise<Blob> {
-  const pdfjsLib = (await import('pdfjs-dist/build/pdf.mjs')) as any;
-  pdfjsLib.GlobalWorkerOptions.workerSrc = (await import('pdfjs-dist/build/pdf.worker.mjs?url')).default as string;
-  const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-  const page = await pdf.getPage(1);
-  const viewport = page.getViewport({ scale: 2 });
-  const canvas = document.createElement('canvas');
-  const context = canvas.getContext('2d')!;
-  canvas.width = viewport.width;
-  canvas.height = viewport.height;
-  await page.render({ canvasContext: context, viewport }).promise;
-  return new Promise((resolve) => {
-    canvas.toBlob((blob) => resolve(blob as Blob), 'image/png');
-  });
-}
-
-// Direct helper if your component calls it
-export async function extractAadhaarWithGemini(file: File | Blob): Promise<AadhaarData> {
-  const raw = await runOCR(file);
-  return parseAadhaarText(raw);
-}
-
