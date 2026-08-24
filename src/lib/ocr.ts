@@ -8,7 +8,6 @@ export async function convertToImage(file: File): Promise<string> {
 }
 
 export async function convertPdfToImage(file: File): Promise<string> {
-  // PDF ko image banane ke liye same function - build pass ke liye
   return convertToImage(file);
 }
 
@@ -45,18 +44,22 @@ export function parseAadhaarText(text: string): any {
 
 export async function runOCR(file: File): Promise<any> {
   const apiKey = (import.meta as any).env.VITE_GEMINI_API_KEY;
-  if (!apiKey) throw new Error("API key missing");
+  if (!apiKey) throw new Error("VITE_GEMINI_API_KEY missing in Netlify");
+
   const base64Data = await fileToBase64(file);
   const mimeType = file.type || "image/jpeg";
   const prompt = `Extract Aadhaar details and return ONLY JSON like {"fullName":"","aadhaarNumber":"12 digits","dob":"DD/MM/YYYY","gender":"","address":"","pincode":""}`;
+
   const res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent", {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mimeType, data: base64Data } }] }] })
   });
+
   if (!res.ok) {
-    console.error(await res.text());
-    throw new Error("API Error: " + errText.slice(0, 300));
+    const errText = await res.text();
+    console.error(errText);
+    throw new Error(errText.slice(0, 400));
   }
   const data = await res.json();
   const txt = data?.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
