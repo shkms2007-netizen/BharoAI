@@ -58,8 +58,9 @@ export default function UploadCard({ lang, onUpload, uploaded, onRemove }: Uploa
         { name: file.name, size: file.size, type: file.type || 'application/octet-stream' },
         data,
       );
-    } catch {
-      setError(tr('uploadOcrError', lang));
+        } catch (e: any) {
+      console.error("OCR Error:", e);
+      setError(e?.message || tr('uploadOcrError', lang));
     } finally {
       setScanning(false);
       setProgress(0);
