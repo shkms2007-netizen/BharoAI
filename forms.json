@@ -1,1 +1,12 @@
-
+[
+  { "id": "pan", "name": "PAN Card - Form 49A", "price": 29, "fields": ["Aadhaar Name", "Father Name", "DOB", "Mobile", "Email"] },
+  { "id": "voter", "name": "Voter ID - Form 6", "price": 29, "fields": ["Name", "Age", "Address", "Assembly"] },
+  { "id": "passport", "name": "Passport Application", "price": 49, "fields": ["Name", "DOB", "Address", "Type"] },
+  { "id": "income", "name": "Income Certificate", "price": 29, "fields": ["Name", "Income", "District", "Purpose"] },
+  { "id": "domicile", "name": "Domicile Certificate", "price": 29, "fields": ["Name", "Stay Years", "Address"] },
+  { "id": "caste", "name": "Caste Certificate", "price": 29, "fields": ["Name", "Caste", "Sub-caste"] },
+  { "id": "eshram", "name": "E-Shram Card", "price": 19, "fields": ["Name", "Work Type", "Bank Account"] },
+  { "id": "ayushman", "name": "Ayushman Card", "price": 19, "fields": ["Name", "Aadhaar", "Family Members"] },
+  { "id": "ration", "name": "Ration Card New", "price": 29, "fields": ["Head Name", "Family Count", "Address"] },
+  { "id": "udyam", "name": "Udyam / MSME Registration", "price": 49, "fields": ["Business Name", "Aadhaar", "PAN"] }
+]
