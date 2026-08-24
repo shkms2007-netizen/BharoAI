@@ -28,28 +28,25 @@ export const t = {
   // Upload
   uploadTitle: { en: 'Upload your Aadhaar card', hi: 'अपना आधार कार्ड अपलोड करें', mr: 'तुमचे आधार कार्ड अपलोड करा' },
   uploadSubtitle: {
-    en: 'We read your details automatically — no typing needed.',
-    hi: 'हम आपकी जानकारी अपने आप पढ़ लेते हैं — टाइप करने की ज़रूरत नहीं।',
-    mr: 'आम्ही तुमची माहिती आपोआप वाचतो — टाईप करण्याची गरज नाही.',
+    en: 'AI reads your details with OCR — no typing needed.',
+    hi: 'AI आपकी जानकारी OCR से पढ़ता है — टाइप करने की ज़रूरत नहीं।',
+    mr: 'AI तुमची माहिती OCR कडून वाचते — टाईप करण्याची गरज नाही.',
   },
   uploadButton: { en: 'Choose Aadhaar file', hi: 'आधार फ़ाइल चुनें', mr: 'आधार फाइल निवडा' },
   uploadOr: { en: 'or drag & drop here', hi: 'यााँ खींचकर छोड़ें', mr: 'किंवा येथे ओढून सोडा' },
   uploadHint: { en: 'PDF, JPG, or PNG • Max 10 MB', hi: 'PDF, JPG या PNG • अधिकतम 10 MB', mr: 'PDF, JPG किंवा PNG • जास्तीत जास्त 10 MB' },
-  uploaded: { en: 'Uploaded', hi: 'अपलोड हो गया', mr: 'अपलोड झाले' },
+  uploaded: { en: 'Aadhaar scanned', hi: 'आधार स्कैन हो गया', mr: 'आधार स्कॅन झाले' },
   uploadedMsg: {
-    en: 'Aadhaar details extracted successfully.',
-    hi: 'आधार की जानकारी सफलतापूर्वक निकाली गई।',
-    mr: 'आधारची माहिती यशस्वीरित्या काढली.',
+    en: 'Details extracted successfully via OCR.',
+    hi: 'OCR द्वारा जानकारी सफलतापूर्वक निकाली गई।',
+    mr: 'OCR द्वारे माहिती यशस्वीरित्या काढली.',
   },
-  uploadedName: { en: 'Detected name', hi: 'पहचाना गया नाम', mr: 'ओळखलेले नाव' },
-  uploadedDob: { en: 'Detected date of birth', hi: 'पहचानी गई जन्म तिथि', mr: 'ओळखलेली जन्मतारीख' },
-  uploadedAddress: { en: 'Detected address', hi: 'पहचाना गया पता', mr: 'ओळखला पत्ता' },
+  uploadedName: { en: 'Name', hi: 'नाम', mr: 'नाव' },
+  uploadedDob: { en: 'Date of Birth', hi: 'जन्म तिथि', mr: 'जन्मतारीख' },
+  uploadedGender: { en: 'Gender', hi: 'लिंग', mr: 'लिंग' },
+  uploadedAadhaar: { en: 'Aadhaar Number', hi: 'आधार नंबर', mr: 'आधार नंबर' },
+  uploadedAddress: { en: 'Address', hi: 'पता', mr: 'पत्ता' },
   uploadRemove: { en: 'Remove', hi: 'हटाएं', mr: 'काढा' },
-  uploadError: {
-    en: 'Please select a valid PDF, JPG, or PNG file under 10 MB.',
-    hi: 'कृपया 10 MB से कम की एक मान्य PDF, JPG या PNG फ़ाइल चुनें।',
-    mr: 'कृपया 10 MB पेक्षा कमी एक वैध PDF, JPG किंवा PNG फाइल निवडा.',
-  },
   uploadErrorSize: {
     en: 'File is too large. Maximum 10 MB allowed.',
     hi: 'फ़ाइल बहुत बड़ी है। अधिकतम 10 MB अनुमत है।',
@@ -61,38 +58,68 @@ export const t = {
     mr: 'असमर्थित फाइल प्रकार. कृपया PDF, JPG किंवा PNG अपलोड करा.',
   },
   uploadScanning: { en: 'Scanning your Aadhaar...', hi: 'आपका आधार स्कैन हो रहा है...', mr: 'तुमचा आधार स्कॅन होत आहे...' },
+  uploadScanningOcr: { en: 'Reading text with AI OCR...', hi: 'AI OCR से टेक्स्ट पढ़ा जा रहा है...', mr: 'AI OCR कडून टेक्स्ट वाचत आहे...' },
+  uploadOcrError: {
+    en: 'Could not read the card clearly. Please try a clearer photo.',
+    hi: 'कार्ड साफ़ पढ़ा नहीं जा सका। कृपया एक साफ़ फोटो लें।',
+    mr: 'कार्ड स्पष्ट वाचता आले नाही. कृपया एक स्पष्ट फोटो घ्या.',
+  },
 
   // Chat
   chatTitle: { en: 'Talk to BharoAI', hi: 'भरोAI से बात करें', mr: 'भरोAI शी बोला' },
   chatSubtitle: {
-    en: 'Tell me which form you need — I will guide you step by step.',
-    hi: 'मुझे बताएं कि कौन सा फॉर्म चाहिए — मैं आपका कदम-कदम मार्गदर्शन करूंगा।',
-    mr: 'मला सांगा कोणता फॉर्म हवा आहे — मी तुम्हाला हळूहळू मार्गदर्शन करेन.',
+    en: 'Type or speak — I understand Hindi, Marathi, and English.',
+    hi: 'लिखें या बोलें — मैं हिंदी, मराठी, और अंग्रेज़ी समझता हूं।',
+    mr: 'लिहा किंवा बोला — मला हिंदी, मराठी, आणि इंग्रजी कळते.',
   },
-  chatPlaceholder: { en: 'Type your message...', hi: 'अपना संदेश लिखें...', mr: 'तुमचा संदेश लिहा...' },
+  chatPlaceholder: { en: 'Type or speak your message...', hi: 'अपना संदेश लिखें या बोलें...', mr: 'तुमचा संदेश लिहा किंवा बोला...' },
   chatSend: { en: 'Send', hi: 'भेजें', mr: 'पाठवा' },
-  chatThinking: { en: 'BharoAI is typing...', hi: 'भरोAI टाइप कर रहा है...', mr: 'भरोAI टाईप करत आहे...' },
+  chatListening: { en: 'Listening...', hi: 'सुन रहा हूं...', mr: 'ऐकत आहे...' },
   chatWelcome: {
-    en: 'Namaste! I am BharoAI. Upload your Aadhaar above, then tell me which Sarkari form you want to fill — like PAN card, passport, ration card, or voter ID. I will guide you in your language.',
-    hi: 'नमस्ते! मैं भरोAI हूं। ऊपर अपना आधार अपलोड करें, फिर बताएं कौन सा सरकारी फॉर्म भरना है — जैसे PAN कार्ड, पासपोर्ट, राशन कार्ड, या वोटर ID। मैं आपकी भाषा में मार्गदर्शन करूंगा।',
-    mr: 'नमस्कार! मी भरोAI आहे. वर तुमचा आधार अपलोड करा, मग सांगा कोणता सरकारी फॉर्म भरायचा आहे — जसे PAN कार्ड, पासपोर्ट, राशन कार्ड, किंवा व्होटर ID. मी तुमच्या भाषेत मार्गदर्शन करेन.',
+    en: 'Namaste! I am BharoAI. Upload your Aadhaar above, then tell me which Sarkari form you want to fill — like PAN card, passport, voter ID, or ration card. You can type or speak in your language!',
+    hi: 'नमस्ते! मैं भरोAI हूं। ऊपर अपना आधार अपलोड करें, फिर बताएं कौन सा सरकारी फॉर्म भरना है — जैसे PAN कार्ड, पासपोर्ट, वोटर ID, या राशन कार्ड। आप अपनी भाषा में लिखें या बोलें!',
+    mr: 'नमस्कार! मी भरोAI आहे. वर तुमचा आधार अपलोड करा, मग सांगा कोणता सरकारी फॉर्म भरायचा आहे — जसे PAN कार्ड, पासपोर्ट, व्होटर ID, किंवा राशन कार्ड. तुम्ही तुमच्या भाषेत लिहा किंवा बोला!',
   },
   chatNoUpload: {
     en: 'Please upload your Aadhaar card first so I can pre-fill your details.',
     hi: 'कृपया पहले अपना आधार कार्ड अपलोड करें ताकि मैं आपकी जानकारी पहले से भर सकूं।',
     mr: 'कृपया आधी तुमचे आधार कार्ड अपलोड करा जेणेकरून मी तुमची माहिती आधीच भरू शकेन.',
   },
-
-  // Bot conversation flow
-  botAskForm: {
-    en: 'Great! Which Sarkari form would you like to fill? You can choose from: PAN Card, Passport, Ration Card, Voter ID, or tell me another one.',
-    hi: 'बहुत बढ़िया! आप कौन सा सरकारी फॉर्म भरना चाहते हैं? इनमें से चुन सकते हैं: PAN कार्ड, पासपोर्ट, राशन कार्ड, वोटर ID, या कोई और बताएं।',
-    mr: 'छान! तुम्हाला कोणता सरकारी फॉर्म भरायचा आहे? यातून निवडा: PAN कार्ड, पासपोर्ट, राशन कार्ड, व्होटर ID, किंवा दुसरे सांगा.',
+  chatGeminiOffline: {
+    en: 'I am running in basic mode. Add your Gemini API key in the .env file for full AI conversation.',
+    hi: 'मैं बेसिक मोड में चल रहा हूं। पूर्ण AI वार्तालाप के लिए अपनी Gemini API कुंजी .env फ़ाइल में डालें।',
+    mr: 'मी बेसिक मोडमध्ये चालत आहे. संपूर्ण AI संभाषणासाठी तुमची Gemini API किल्ली .env फाइलमध्ये टाका.',
   },
-  botConfirmForm: {
-    en: (f: string) => `You selected: ${f}. I have pre-filled your name, date of birth, and address from your Aadhaar. Now I need a few more details. What is your mobile number?`,
-    hi: (f: string) => `आपने चुना: ${f}। मैंने आपके आधार से आपका नाम, जन्म तिथि, और पता पहले से भर दिया है। अब मुझे कुछ और जानकारी चाहिए। आपका मोबाइल नंबर क्या है?`,
-    mr: (f: string) => `तुम्ही निवडले: ${f}. मी तुमच्या आधारवरून तुमचे नाव, जन्मतारीख आणि पत्ता आधीच भरले आहेत. आता मला थोडी अधिक माहिती हवी आहे. तुमचा मोबाइल नंबर काय आहे?`,
+
+  // Quick reply suggestions
+  suggestionPan: { en: 'PAN Card', hi: 'PAN कार्ड', mr: 'PAN कार्ड' },
+  suggestionPassport: { en: 'Passport', hi: 'पासपोर्ट', mr: 'पासपोर्ट' },
+  suggestionRation: { en: 'Ration Card', hi: 'राशन कार्ड', mr: 'राशन कार्ड' },
+  suggestionVoter: { en: 'Voter ID', hi: 'वोटर ID', mr: 'व्होटर ID' },
+
+  // Form preview
+  previewTitle: { en: 'Form Preview', hi: 'फॉर्म पूर्वावलोकन', mr: 'फॉर्म पूर्वावलोकन' },
+  previewSubtitle: { en: 'Review your filled form before downloading', hi: 'डाउनलोड करने से पहले अपना भरा हुआ फॉर्म देखें', mr: 'डाउनलोड करण्यापूर्वी तुमचा भरलेला फॉर्म तपासा' },
+  previewDownload: { en: 'Download PDF', hi: 'PDF डाउनलोड करें', mr: 'PDF डाउनलोड करा' },
+  previewPrint: { en: 'Print', hi: 'प्रिंट करें', mr: 'प्रिंट करा' },
+  previewEdit: { en: 'Edit details', hi: 'विवरण संपादित करें', mr: 'तपशील संपादित करा' },
+  previewNewForm: { en: 'Fill another form', hi: 'दूसरा फॉर्म भरें', mr: 'दुसरा फॉर्म भरा' },
+  previewFormComplete: {
+    en: 'Your form is ready! Review the details below and download as PDF.',
+    hi: 'आपका फॉर्म तैयार है! नीचे विवरण देखें और PDF डाउनलोड करें।',
+    mr: 'तुमचा फॉर्म तयार आहे! खालील तपशील तपासा आणि PDF डाउनलोड करा.',
+  },
+
+  // Bot conversation flow (fallback when no Gemini)
+  botAskForm: {
+    en: 'Great! Which Sarkari form would you like to fill? You can choose from: PAN Card, Passport, Ration Card, or Voter ID.',
+    hi: 'बहुत बढ़िया! आप कौन सा सरकारी फॉर्म भरना चाहते हैं? इनमें से चुन सकते हैं: PAN कार्ड, पासपोर्ट, राशन कार्ड, या वोटर ID।',
+    mr: 'छान! तुम्हाला कोणता सरकारी फॉर्म भरायचा आहे? यातून निवडा: PAN कार्ड, पासपोर्ट, राशन कार्ड, किंवा व्होटर ID.',
+  },
+  botAskMobile: {
+    en: 'What is your mobile number?',
+    hi: 'आपका मोबाइल नंबर क्या है?',
+    mr: 'तुमचा मोबाइल नंबर काय आहे?',
   },
   botAskEmail: {
     en: 'Got it. What is your email address?',
@@ -100,36 +127,25 @@ export const t = {
     mr: 'मिळाले. तुमचा ईमेल पत्ता काय आहे?',
   },
   botAskOccupation: {
-    en: 'Thank you. What is your occupation? (e.g., student, farmer, businessman, government employee)',
-    hi: 'धन्यवाद। आपका क्या काम है? (जैसे, छात्र, किसान, व्यवसायी, सरकारी कर्मचारी)',
-    mr: 'धन्यवाद. तुमचा व्यवसाय काय आहे? (उदा. विद्यार्थी, शेतकरी, व्यवसायी, सरकारी कर्मचारी)',
+    en: 'Thank you. What is your occupation?',
+    hi: 'धन्यवाद। आपका क्या काम है?',
+    mr: 'धन्यवाद. तुमचा व्यवसाय काय आहे?',
+  },
+  botAskFather: {
+    en: "What is your father's name?",
+    hi: 'आपके पिता का नाम क्या है?',
+    mr: 'तुमच्या वडिलांचे नाव काय आहे?',
+  },
+  botAskIncome: {
+    en: 'What is your annual income?',
+    hi: 'आपकी वार्षिक आय क्या है?',
+    mr: 'तुमचे वार्षिक उत्पन्न काय आहे?',
   },
   botComplete: {
-    en: 'All details collected! Your form is ready. Here is a summary of what I filled:',
-    hi: 'सभी जानकारी इकट्ठा हो गई! आपका फॉर्म तैयार है। यहाँ देखें मैंने क्या भरा:',
-    mr: 'सर्व माहिती गोळा झाली! तुमचा फॉर्म तयार आहे. बघा मी काय भरले:',
+    en: 'All details collected! Your form is ready. Check the preview below.',
+    hi: 'सभी जानकारी इकट्ठा हो गई! आपका फॉर्म तैयार है। नीचे पूर्वावलोकन देखें।',
+    mr: 'सर्व माहिती गोळा झाली! तुमचा फॉर्म तयार आहे. खाली पूर्वावलोकन बघा.',
   },
-  botSummaryName: { en: 'Name', hi: 'नाम', mr: 'नाव' },
-  botSummaryDob: { en: 'Date of Birth', hi: 'जन्म तिथि', mr: 'जन्मतारीख' },
-  botSummaryAddress: { en: 'Address', hi: 'पता', mr: 'पत्ता' },
-  botSummaryMobile: { en: 'Mobile', hi: 'मोबाइल', mr: 'मोबाइल' },
-  botSummaryEmail: { en: 'Email', hi: 'ईमेल', mr: 'ईमेल' },
-  botSummaryOccupation: { en: 'Occupation', hi: 'व्यवसाय', mr: 'व्यवसाय' },
-  botSummaryForm: { en: 'Form type', hi: 'फॉर्म प्रकार', mr: 'फॉर्म प्रकार' },
-  botDownload: {
-    en: 'Your form has been filled. You can download or print it now.',
-    hi: 'आपका फॉर्म भर दिया गया है। आप इसे डाउनलोड या प्रिंट कर सकते हैं।',
-    mr: 'तुमचा फॉर्म भरला गेला आहे. तुम्ही तो डाउनलोड किंवा प्रिंट करू शकता.',
-  },
-  botDownloadBtn: { en: 'Download filled form', hi: 'भरा हुआ फॉर्म डाउनलोड करें', mr: 'भरलेला फॉर्म डाउनलोड करा' },
-  botPrintBtn: { en: 'Print form', hi: 'फॉर्म प्रिंट करें', mr: 'फॉर्म प्रिंट करा' },
-  botRestart: { en: 'Fill another form', hi: 'दूसरा फॉर्म भरें', mr: 'दुसरा फॉर्म भरा' },
-
-  // Quick reply suggestions
-  suggestionPan: { en: 'PAN Card', hi: 'PAN कार्ड', mr: 'PAN कार्ड' },
-  suggestionPassport: { en: 'Passport', hi: 'पासपोर्ट', mr: 'पासपोर्ट' },
-  suggestionRation: { en: 'Ration Card', hi: 'राशन कार्ड', mr: 'राशन कार्ड' },
-  suggestionVoter: { en: 'Voter ID', hi: 'वोटर ID', mr: 'व्होटर ID' },
 
   // Features section
   featuresTitle: { en: 'How it works', hi: 'कैसे काम करता है', mr: 'कसे काम करते' },
@@ -140,28 +156,28 @@ export const t = {
   },
   feature1Title: { en: 'Upload Aadhaar', hi: 'आधार अपलोड करें', mr: 'आधार अपलोड करा' },
   feature1Desc: {
-    en: 'Snap a photo or upload a PDF. AI reads your name, address, and date of birth instantly.',
-    hi: 'फोटो खींचें या PDF अपलोड करें। AI आपका नाम, पता, और जन्म तिथि तुरंत पढ़ लेता है।',
-    mr: 'फोटो काढा किंवा PDF अपलोड करा. AI तुमचे नाव, पत्ता आणि जन्मतारीख लगेच वाचतो.',
+    en: 'Snap a photo or upload a PDF. AI-powered OCR reads your name, address, DOB, gender, and Aadhaar number instantly.',
+    hi: 'फोटो खींचें या PDF अपलोड करें। AI-संचालित OCR आपका नाम, पता, जन्म तिथि, लिंग, और आधार नंबर तुरंत पढ़ लेता है।',
+    mr: 'फोटो काढा किंवा PDF अपलोड करा. AI-चालित OCR तुमचे नाव, पत्ता, जन्मतारीख, लिंग, आणि आधार नंबर लगेच वाचतो.',
   },
   feature2Title: { en: 'Talk in your language', hi: 'अपनी भाषा में बात करें', mr: 'तुमच्या भाषेत बोला' },
   feature2Desc: {
-    en: 'Tell the AI which form you need — in Hindi, Marathi, or English. It understands and guides you.',
-    hi: 'AI को अपनी भाषा में बताएं कि कौन सा फॉर्म चाहिए — हिंदी, मराठी, या अंग्रेज़ी में। यह समझता है और मार्गदर्शन करता है।',
-    mr: 'AI ला तुमच्या भाषेत सांगा कोणता फॉर्म हवा — हिंदी, मराठी, किंवा इंग्रजीत. ते समजते आणि मार्गदर्शन करते.',
+    en: 'Type or speak in Hindi, Marathi, or English. Gemini AI understands you and guides you conversationally.',
+    hi: 'हिंदी, मराठी, या अंग्रेज़ी में लिखें या बोलें। Gemini AI आपको समझता है और बातचीत से मार्गदर्शन करता है।',
+    mr: 'हिंदी, मराठी, किंवा इंग्रजीत लिहा किंवा बोला. Gemini AI तुम्हाला समजते आणि संभाषणातून मार्गदर्शन करते.',
   },
-  feature3Title: { en: 'Get your filled form', hi: 'भरा हुआ फॉर्म पाएं', mr: 'भरलेला फॉर्म मिळवा' },
+  feature3Title: { en: 'Download your form', hi: 'अपना फॉर्म डाउनलोड करें', mr: 'तुमचा फॉर्म डाउनलोड करा' },
   feature3Desc: {
-    en: 'AI fills every field automatically. Download, print, or submit — done in minutes.',
-    hi: 'AI हर खाना अपने आप भर देता है। डाउनलोड, प्रिंट, या जमा करें — मिनटों में हो जाए।',
-    mr: 'AI प्रत्येक रकाना आपोआप भरतो. डाउनलोड, प्रिंट, किंवा जमा करा — मिनिटांत होते.',
+    en: 'Preview the filled form, then download it as a PDF — ready to print or submit.',
+    hi: 'भरे हुए फॉर्म को देखें, फिर PDF के रूप में डाउनलोड करें — प्रिंट या जमा करने के लिए तैयार।',
+    mr: 'भरलेला फॉर्म तपासा, मग PDF म्हणून डाउनलोड करा — प्रिंट किंवा जमा करण्यासाठी तयार.',
   },
 
   // Stats
   statForms: { en: 'Forms supported', hi: 'फॉर्म उपलब्ध', mr: 'फॉर्म उपलब्ध' },
   statLanguages: { en: 'Languages', hi: 'भाषाएं', mr: 'भाषा' },
   statUsers: { en: 'Happy users', hi: 'संतुष्ट उपयोगकर्ता', mr: 'समाधानी वापरकर्ते' },
-  statAccuracy: { en: 'Filling accuracy', hi: 'भरने की सटीकता', mr: 'भरण्याची अचूकता' },
+  statAccuracy: { en: 'OCR accuracy', hi: 'OCR सटीकता', mr: 'OCR अचूकता' },
 
   // Footer
   footerTagline: {
@@ -185,7 +201,7 @@ export const t = {
   trustSecure: { en: 'Bank-grade encryption', hi: 'बैंक-स्तरीय एन्क्रिप्शन', mr: 'बँक-स्तरावरील एन्क्रिप्शन' },
   trustPrivate: { en: 'Your data stays private', hi: 'आपका डेटा निजी रहता है', mr: 'तुमचा डेटा खाजगी राहतो' },
   trustFree: { en: 'Free to use', hi: 'इस्तेमाल करने में मुफ़्त', mr: 'वापरण्यासाठी मोफत' },
-};
+} as const;
 
 export type TranslationKey = keyof typeof t;
 
@@ -193,10 +209,4 @@ export function tr(key: TranslationKey, lang: Language): string {
   const entry = t[key];
   const val = (entry as Record<Language, unknown>)[lang];
   return typeof val === 'string' ? val : (entry as Record<Language, string>)[lang];
-}
-
-export function trFn(key: 'botConfirmForm', lang: Language, arg: string): string {
-  const entry = t[key];
-  const val = (entry as Record<Language, unknown>)[lang];
-  return typeof val === 'function' ? (val as (a: string) => string)(arg) : (val as string);
 }

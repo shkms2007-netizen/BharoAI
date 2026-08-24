@@ -1,13 +1,8 @@
 import { useRef, useState } from 'react';
-import { UploadCloud, FileCheck2, X, ScanLine, User, Calendar, MapPin } from 'lucide-react';
-import type { Language, UploadedFile } from '@/types';
+import { UploadCloud, FileCheck2, X, ScanLine, User, Calendar, MapPin, Hash, Users } from 'lucide-react';
+import type { AadhaarData, Language, UploadedFile } from '@/types';
 import { tr } from '@/i18n';
-
-type AadhaarData = {
-  name: string;
-  dob: string;
-  address: string;
-};
+import { runOCR, parseAadhaarText, convertPdfToImage } from '@/lib/ocr';
 
 type UploadCardProps = {
   lang: Language;
@@ -17,23 +12,18 @@ type UploadCardProps = {
 };
 
 const MAX_SIZE = 10 * 1024 * 1024;
-const ACCEPTED = ['application/pdf', 'image/jpeg', 'image/jpg', 'image/png'];
-
-// Mock extracted Aadhaar data
-const mockAadhaar: Record<Language, AadhaarData> = {
-  en: { name: 'Ramesh Kumar Sharma', dob: '15-Aug-1990', address: '42 Gandhi Nagar, Lucknow, Uttar Pradesh - 226001' },
-  hi: { name: 'रमेश कुमार शर्मा', dob: '15-अगस्त-1990', address: '42 गांधी नगर, लखनऊ, उत्तर प्रदेश - 226001' },
-  mr: { name: 'रमेश कुमार शर्मा', dob: '15-ऑगस्ट-1990', address: '42 गांधी नगर, लखनौ, उत्तर प्रदेश - 226001' },
-};
 
 export default function UploadCard({ lang, onUpload, uploaded, onRemove }: UploadCardProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [scanning, setScanning] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   function validate(file: File): string | null {
-    if (!ACCEPTED.includes(file.type) && !file.name.match(/\.(pdf|jpe?g|png)$/i)) {
+    const isPdf = file.type === 'application/pdf' || file.name.match(/\.pdf$/i);
+    const isImage = ['image/jpeg', 'image/jpg', 'image/png'].includes(file.type) || file.name.match(/\.(jpe?g|png)$/i);
+    if (!isPdf && !isImage) {
       return tr('uploadErrorType', lang);
     }
     if (file.size > MAX_SIZE) {
@@ -42,7 +32,7 @@ export default function UploadCard({ lang, onUpload, uploaded, onRemove }: Uploa
     return null;
   }
 
-  function handleFile(file: File) {
+  async function handleFile(file: File) {
     const err = validate(file);
     if (err) {
       setError(err);
@@ -50,16 +40,30 @@ export default function UploadCard({ lang, onUpload, uploaded, onRemove }: Uploa
     }
     setError(null);
     setScanning(true);
+    setProgress(0);
 
-    // Simulate OCR scan delay
-    setTimeout(() => {
-      const data = mockAadhaar[lang];
+    try {
+      let imageToScan: File | Blob = file;
+
+      // If PDF, convert first page to image
+      if (file.type === 'application/pdf' || file.name.match(/\.pdf$/i)) {
+        imageToScan = await convertPdfToImage(file);
+      }
+
+      // Run OCR
+      const rawText = await runOCR(imageToScan, (pct) => setProgress(Math.round(pct * 100)));
+      const data = parseAadhaarText(rawText);
+
       onUpload(
         { name: file.name, size: file.size, type: file.type || 'application/octet-stream' },
         data,
       );
+    } catch {
+      setError(tr('uploadOcrError', lang));
+    } finally {
       setScanning(false);
-    }, 1800);
+      setProgress(0);
+    }
   }
 
   function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -102,17 +106,17 @@ export default function UploadCard({ lang, onUpload, uploaded, onRemove }: Uploa
           </button>
         </div>
 
-        {/* File info */}
         <div className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg mb-4">
           <FileCheck2 className="w-4 h-4 text-saffron-500 shrink-0" />
           <span className="text-sm text-gray-700 truncate">{uploaded.file.name}</span>
           <span className="text-xs text-gray-400 ml-auto shrink-0">{formatSize(uploaded.file.size)}</span>
         </div>
 
-        {/* Extracted fields */}
         <div className="space-y-3">
           <ExtractedRow icon={<User className="w-4 h-4" />} label={tr('uploadedName', lang)} value={uploaded.data.name} />
           <ExtractedRow icon={<Calendar className="w-4 h-4" />} label={tr('uploadedDob', lang)} value={uploaded.data.dob} />
+          <ExtractedRow icon={<Users className="w-4 h-4" />} label={tr('uploadedGender', lang)} value={uploaded.data.gender} />
+          <ExtractedRow icon={<Hash className="w-4 h-4" />} label={tr('uploadedAadhaar', lang)} value={uploaded.data.aadhaarNumber} />
           <ExtractedRow icon={<MapPin className="w-4 h-4" />} label={tr('uploadedAddress', lang)} value={uploaded.data.address} />
         </div>
       </div>
@@ -134,6 +138,17 @@ export default function UploadCard({ lang, onUpload, uploaded, onRemove }: Uploa
             <ScanLine className="w-7 h-7 text-saffron-500 absolute inset-0 m-auto animate-pulse-slow" />
           </div>
           <p className="text-sm font-medium text-gray-600">{tr('uploadScanning', lang)}</p>
+          {progress > 0 && (
+            <div className="mt-3 w-48 max-w-full">
+              <div className="h-2 rounded-full bg-saffron-100 overflow-hidden">
+                <div
+                  className="h-full bg-saffron-500 transition-all duration-300"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              <p className="text-center text-xs text-gray-400 mt-1.5">{tr('uploadScanningOcr', lang)} {progress}%</p>
+            </div>
+          )}
         </div>
       ) : (
         <>
@@ -178,6 +193,7 @@ export default function UploadCard({ lang, onUpload, uploaded, onRemove }: Uploa
 }
 
 function ExtractedRow({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+  const isNotDetected = value === 'Not detected';
   return (
     <div className="flex items-start gap-3 px-3 py-2.5 rounded-lg bg-gradient-to-r from-saffron-50/60 to-transparent border border-saffron-100/60">
       <div className="w-8 h-8 rounded-lg bg-saffron-500/10 flex items-center justify-center text-saffron-600 shrink-0">
@@ -185,7 +201,9 @@ function ExtractedRow({ icon, label, value }: { icon: React.ReactNode; label: st
       </div>
       <div className="min-w-0">
         <p className="text-[11px] text-gray-500 font-medium uppercase tracking-wide">{label}</p>
-        <p className="text-sm text-gray-800 font-medium break-words">{value}</p>
+        <p className={`text-sm font-medium break-words ${isNotDetected ? 'text-gray-400 italic' : 'text-gray-800'}`}>
+          {value}
+        </p>
       </div>
     </div>
   );

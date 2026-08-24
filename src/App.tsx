@@ -3,22 +3,17 @@ import Header from '@/components/Header';
 import Hero from '@/components/Hero';
 import UploadCard from '@/components/UploadCard';
 import ChatBox from '@/components/ChatBox';
+import FormPreview from '@/components/FormPreview';
 import Features from '@/components/Features';
 import Stats from '@/components/Stats';
 import Footer from '@/components/Footer';
-import type { Language, UploadedFile } from '@/types';
-
-type AadhaarData = {
-  name: string;
-  dob: string;
-  address: string;
-};
+import type { AadhaarData, FilledFormData, Language, UploadedFile } from '@/types';
 
 export default function App() {
   const [lang, setLang] = useState<Language>('en');
   const [uploaded, setUploaded] = useState<{ file: UploadedFile; data: AadhaarData } | null>(null);
+  const [completedForm, setCompletedForm] = useState<FilledFormData | null>(null);
 
-  // Persist language preference
   useEffect(() => {
     const saved = localStorage.getItem('bharoai-lang') as Language | null;
     if (saved && ['en', 'hi', 'mr'].includes(saved)) {
@@ -37,6 +32,24 @@ export default function App() {
 
   function handleRemove() {
     setUploaded(null);
+  }
+
+  function handleFormComplete(formData: FilledFormData) {
+    setCompletedForm(formData);
+    // Scroll to preview after a short delay
+    setTimeout(() => {
+      document.getElementById('form-preview')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 300);
+  }
+
+  function handleReset() {
+    setCompletedForm(null);
+  }
+
+  function handleNewForm() {
+    setCompletedForm(null);
+    setUploaded(null);
+    document.getElementById('top')?.scrollIntoView({ behavior: 'smooth' });
   }
 
   function scrollToUpload() {
@@ -64,10 +77,25 @@ export default function App() {
                 lang={lang}
                 hasAadhaar={!!uploaded}
                 aadhaarData={uploaded?.data ?? null}
+                onFormComplete={handleFormComplete}
+                onReset={handleReset}
               />
             </div>
           </div>
         </section>
+
+        {/* Form preview (shown when form is complete) */}
+        {completedForm && (
+          <section id="form-preview" className="py-8 sm:py-12 bg-gradient-to-b from-saffron-50/40 to-white">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+              <FormPreview
+                formData={completedForm}
+                lang={lang}
+                onNewForm={handleNewForm}
+              />
+            </div>
+          </section>
+        )}
 
         <Features lang={lang} />
         <Stats lang={lang} />
